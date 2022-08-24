@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+
+  web:
+    build: .
+    image: web
+    container_name: web
+    ports:
+      - "7000:8000"
+    command: python3 client.py 
+    volumes:
+      - .:/app
+    depends_on:
+      - rmq
+  
+  worker:
+    build: .
+    command: celery -A tasks worker --loglevel=info --max-memory-per-child 1
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+      - rmq
+  
+  dashboard:
+    build: . 
+    command: celery -A tasks flower --port=5555
+    ports:
+      - "9000:5555"
+    depends_on:
+      - web
+      - rmq
+      - worker
+  
+  rmq:
+    image: rabbitmq:3.9-alpine
