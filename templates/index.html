@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>test</title>
+  </head>
+
+  <body>
+
+    <div>
+	<label for="fname">Please write a genre</label>
+  	<input type="text" id="Genre" name="fname"><br><br>
+	<button id = "btnStart" type="button">Get movies having this genre from top 100 movies in imdb</button>
+    </div>
+
+
+  </body>
+
+</html>
+<script>
+	const genre = document.getElementById('Genre').value;
+	console.log(genre);
+	async function startTask()
+	{
+		const genre = document.getElementById('Genre').value;
+		console.log(genre);
+		let body = JSON.stringify({
+                     "genre": genre,
+                 });
+         	console.log(body);
+        	await fetch("/movies" ,
+		{	
+			method: "POST",
+			headers:
+			{
+				'Content-Type': 'application/json'
+			},
+			mode: 'no-cors',
+			body: body
+		})
+		.catch((e) =>
+		{
+			console.log(e);
+			return;
+		})
+		.then(response =>
+		{
+			console.log(response.json);
+			return;
+		});
+     	}
+	
+	const startButton = document.getElementById('btnStart');
+	startButton.addEventListener('click', (e) => startTask() );
+</script>
